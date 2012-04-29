@@ -1,13 +1,11 @@
 # clj-rules
 
-FIXME: write description
+Naive musings on making 'rule driven' code in clojure. Nothing formal or terribly usefull yet.
 
 ## Usage
 
 FIXME: write
 
 ## License
-
-Copyright (C) 2012 FIXME
 
 Distributed under the Eclipse Public License, the same as Clojure.
