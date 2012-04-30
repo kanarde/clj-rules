@@ -8,7 +8,7 @@
      :action (fn [s] (update-in s [:price] #(* % 1.20) ))}
     
     {:name "Increase cost by 5% for males"
-     :ordinal 3
+     :ordinal 2
      :rule #(let [{{sex :sex} :person} %] (= sex :male) )
      :action (fn [s] (update-in s [:price] #(* % 1.05) ))}
 
@@ -41,4 +41,15 @@
       (recur rules-to-skip result)
       result)))
 
-(rule-eng rules customer)
+; Niave Approach #3: Single Pass Chained Match & Execute
+; Orders rules, transforms each rule to a function which executes the action based on the predicate
+; in a chain of functions. The result of each rule is the input for the next (which allows
+; eariler rules to trigger later rules, but not later rules to trigger earlier rules)
+; Rules are reverse ordered so 'comp' nests the functions correctly
+(defn rule-eng2 [rules state]
+  (let [sorted-rules (reverse (sort-by :ordinal rules))
+        rule-chain (map #(let [{rule :rule action :action} %]
+                           (fn [s] (if (rule s) (action s) s)) ) sorted-rules)]
+    ((apply comp rule-chain) state)))
+
+(rule-eng2 rules customer)
